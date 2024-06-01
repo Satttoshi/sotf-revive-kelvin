@@ -16,3 +16,8 @@ Congratz you revived Kelvin!
 ## Download
 
 - [Release 0.1.0](https://github.com/Satttoshi/sotf-revive-kelvin/releases/tag/release)
+
+## Q&A
+
+When can this also revive Virginia? 
+- She not dead yet in my world. Will update when she is.
