@@ -31,8 +31,8 @@ fn main() {
         extracted_file.read_to_string(&mut file_contents).expect("Failed to read extracted file");
     }
 
-    println!("Removing IsRobbyDead:true value...");
-    file_contents = file_contents.replace("\\\"IsRobbyDead\\\":true,", "");
+    println!("Removing IsRobbyDead...");
+    file_contents = file_contents.replace("\"IsRobbyDead\":true,", "");
 
     {
         let mut modified_file = File::create(&temp_extract_path).expect("Failed to create temp file for modification");
