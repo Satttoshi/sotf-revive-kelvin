@@ -24,6 +24,11 @@ fn write_string_to_file(file_path: &std::path::Path, contents: &str) {
     file.write_all(contents.as_bytes()).expect("Failed to write contents to file");
 }
 
+fn find_second_occurrence(s: &str, pattern: &str) -> Option<usize> {
+    let first_occurrence = s.find(pattern)?;
+    s[first_occurrence + pattern.len()..].find(pattern).map(|second| first_occurrence + pattern.len() + second)
+}
+
 fn main() {
     // Assuming the script is run from the directory containing SaveData.zip
     let zip_path = "SaveData.zip";
@@ -71,6 +76,28 @@ fn main() {
             if let Some(end_brace_pos) = save_data_contents[stats_index..].find('}') {
                 let insert_index = stats_index + end_brace_pos;
                 save_data_contents.insert_str(insert_index, ",\\\"Health\\\":100.0");
+            }
+        }
+    }
+
+    // Modify the second occurrence of "TypeId":9
+    if let Some(second_pos) = find_second_occurrence(&save_data_contents, "\\\"TypeId\\\":9") {
+        if let Some(player_killed_pos) = save_data_contents[second_pos..].find("\\\"PlayerKilled\\\":1") {
+            let player_killed_index = second_pos + player_killed_pos;
+            if let Some(end_comma_pos) = save_data_contents[player_killed_index..].find(',') {
+                let end_index = player_killed_index + end_comma_pos + 1;
+                save_data_contents.replace_range(player_killed_index..end_index, "");
+            }
+        }
+
+        if let Some(killed_on_day_pos) = save_data_contents[second_pos..].find("\\\"KilledOnDay\\\":") {
+            let killed_on_day_index = second_pos + killed_on_day_pos;
+            if let Some(start_brace_pos) = save_data_contents[killed_on_day_index..].find('{') {
+                if let Some(end_brace_pos) = save_data_contents[killed_on_day_index..].find('}') {
+                    let start_index = killed_on_day_index + start_brace_pos;
+                    let end_index = killed_on_day_index + end_brace_pos + 1;
+                    save_data_contents.replace_range(start_index + 1..end_index - 1, "");
+                }
             }
         }
     }
